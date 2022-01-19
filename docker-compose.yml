@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  frontend:
+    image: nginx
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./frontend/build:/www/app/build
+    ports:
+      - "666:666"
+    depends_on:
+      - backend
+  backend:
+    build: ./backend
+    volumes:
+      - ./public:/web/public
+    ports: 
+      - "4567:4567"
