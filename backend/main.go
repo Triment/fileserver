@@ -64,6 +64,13 @@ func main() {
 	root := "/web/public"
 	fileSystem := os.DirFS(root)
 	router := wing.CreateRouter()
+	router.GET("/file", []wing.MiddleFunc{cors}, func(context *wing.Context) {
+		files, err := recurse(root)
+		if err != nil {
+			context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"})
+		}
+		context.JSON(&ResMessage{Status: 200, Body: files}) //根文件夹，返回文件夹列表
+	})
 	router.GET("/file/*path", []wing.MiddleFunc{cors}, func(context *wing.Context) {
 		if len(context.Params["path"]) > 0 && fs.ValidPath(path.Join(path.Base(root), context.Params["path"])) {
 			reqPath := path.Join(root, context.Params["path"])

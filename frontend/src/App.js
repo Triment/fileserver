@@ -4,7 +4,7 @@ function App() {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_HOST : "localhost"
   const [files, setFiles] = useState([])
   useEffect(()=>{
-    fetch(`http://${apiUrl}:4567/file/public`).then(res=>res.json()).then(data=>{
+    fetch(`http://${apiUrl}:4567/file`).then(res=>res.json()).then(data=>{
       if (data.status === 200){
         setFiles(data.body)
       }
