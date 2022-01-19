@@ -1,4 +1,4 @@
 FROM scratch
 
 COPY ./main /go/bin/main
-CMD [ "/go/bin/main" ]
+ENTRYPOINT [ "/go/bin/main" ]
