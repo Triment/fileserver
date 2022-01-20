@@ -17,6 +17,10 @@ github.com/BurntSushi/toml v0.4.1 h1:GaI7EiDXDRfa8VshkTj7Fym7ha+y8/XxIgD2okUIjLw
 github.com/BurntSushi/toml v0.4.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
+github.com/Triment/eject v0.0.0-20220120085741-2e8ef318b3e3 h1:MgfDr7JpQ8QL2EZT3Z/Kn63BwQ01siD2Zv1S4uAM7pE=
+github.com/Triment/eject v0.0.0-20220120085741-2e8ef318b3e3/go.mod h1:J+JgXC/cbBGYbl7YDpiY57xwfaI/HjazeDk0Ms4/QEE=
+github.com/Triment/eject v0.0.0-20220120091850-2e3c8901dfeb h1:qqxjwZzFF+xMuhDYpTku/smNw/wniKcxG4j8k3DTSsY=
+github.com/Triment/eject v0.0.0-20220120091850-2e3c8901dfeb/go.mod h1:J+JgXC/cbBGYbl7YDpiY57xwfaI/HjazeDk0Ms4/QEE=
 github.com/Triment/wing v0.0.0-20210914032448-70bf68a0fc12 h1:aNnBVHwEBaz5XEc3Lsdvh7jfZFTuR9Xt0tdI4wwm3vs=
 github.com/Triment/wing v0.0.0-20210914032448-70bf68a0fc12/go.mod h1:2Dc1l8dcC4Q5kQhm4qAcGuNfr8PAxX0aIn87wTAGgbE=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=

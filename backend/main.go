@@ -8,7 +8,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/Triment/wing"
+	"github.com/Triment/eject"
 )
 
 //define file or folder struct
@@ -25,14 +25,12 @@ type ResMessage struct {
 }
 
 //跨域中间件
-var cors = func(c *wing.Context, handle func(*wing.Context)) func(*wing.Context) {
-	c.Response.Header().Set("Access-Control-Allow-Origin", "*")
-	return func(context *wing.Context) {
-		handle(context)
-	}
+var cors = func(c *eject.Context) {
+	c.Res.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 func recurse(path string) ([]File, error) { //递归文件夹
+	fmt.Println(path)
 	var arr []File
 	stat, err := os.Stat(path)
 	if err != nil {
@@ -63,18 +61,19 @@ func recurse(path string) ([]File, error) { //递归文件夹
 func main() {
 	root := "/web/public"
 	fileSystem := os.DirFS(root)
-	router := wing.CreateRouter()
-	router.GET("/file", []wing.MiddleFunc{cors}, func(context *wing.Context) {
+	router := eject.CreateRouter()
+	router.GET("/file", func(context *eject.Context) {
 		files, err := recurse(root)
 		if err != nil {
 			context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"})
 		}
 		context.JSON(&ResMessage{Status: 200, Body: files}) //根文件夹，返回文件夹列表
 	})
-	router.GET("/file/*path", []wing.MiddleFunc{cors}, func(context *wing.Context) {
+	router.GET("/file/*path", func(context *eject.Context) {
 		if len(context.Params["path"]) > 0 && fs.ValidPath(path.Join(path.Base(root), context.Params["path"])) {
 			reqPath := path.Join(root, context.Params["path"])
 			stat, err := os.Stat(reqPath)
+			fmt.Println(reqPath)
 			if err != nil {
 				context.JSON(&ResMessage{Status: 404, Body: "文件信息读取失败"}) //文件读取信息失败
 				return
@@ -83,6 +82,7 @@ func main() {
 				files, err := recurse(reqPath)
 				if err != nil {
 					context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"}) //文件夹打开失败
+					return
 				}
 				context.JSON(&ResMessage{Status: 200, Body: files}) //打开文件夹，返回文件夹列表
 			} else {
@@ -91,15 +91,17 @@ func main() {
 				fileName := paths[len(paths)-1]
 				fmt.Println(fileName)
 				if err == nil {
-					context.Response.Header().Set("Content-Type", "application/octet-stream")
-					context.Response.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
-					context.Response.Write(file) //下载文件
+					context.Res.Header().Set("Content-Type", "application/octet-stream")
+					context.Res.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
+					context.Res.Write(file) //下载文件
 				} else {
 					context.JSON(&ResMessage{Status: 500, Body: "文件加载失败"}) //文件加载失败
 				}
 			}
 		}
 	})
-	app := wing.CreateApplication(router)
+	app := eject.CreateApp()
+	app.Inject(cors)
+	app.Inject(router.Accept())
 	app.Listen(":4567")
 }
