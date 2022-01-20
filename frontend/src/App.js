@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tree } from '@geist-ui/core'
+import { Tree, Text, Divider } from '@geist-ui/core'
 function App() {
   const apiUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_HOST : "localhost"
   const [files, setFiles] = useState([])
@@ -26,8 +26,13 @@ function App() {
       window.URL.revokeObjectURL(url);
     })
   }
- return (
-   <Tree onClick={click} value={files}/>
+ return (<>
+      <Divider align="center">壹米滴答网点日常资源</Divider>
+      <br></br>
+      <Text style={{'color': 'red'}} h6>点击+号展开文件夹，点击文件直接下载， 技术支持：企业微信-川渝省区-IT支持组-林帅</Text>
+      <Tree onClick={click} value={files}/>
+      <Divider />
+  </>
  );
 }
 
