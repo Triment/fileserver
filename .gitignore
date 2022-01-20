@@ -13,6 +13,8 @@ frontend/build
 
 # misc
 backend/.DS_Store
+backend/public/
+backend/main
 frontend/.DS_Store
 frontend/.env.local
 frontend/.env.development.local

@@ -8,10 +8,11 @@ function App() {
       if (data.status === 200){
         setFiles(data.body)
       }
+      console.log(data)
     })
   },[])
   function click(path){//下载
-    fetch(`http://${apiUrl}:4567/file/public/${path}`).then(res=>res.blob()).then(blob=>{
+    fetch(`http://${apiUrl}:4567/file/${path}`).then(res=>res.blob()).then(blob=>{
       let paths = path.split('/')
       var filename =  paths[paths.length-1]
       var a = document.createElement('a');//control+C+V大法好🐮🍺
