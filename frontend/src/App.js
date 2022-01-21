@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { Tree, Text, Divider } from '@geist-ui/core'
+import { Tree, Text, Divider, Modal, Loading, Progress, useToasts } from '@geist-ui/core'
 function App() {
-  const apiUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_HOST : "localhost"
+
+  const apiUrl = process.env.REACT_APP_HOST
   const [files, setFiles] = useState([])
+  const [modal, setModal] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [, setToast] = useToasts()
+
+
   useEffect(()=>{
     fetch(`http://${apiUrl}:4567/file`).then(res=>res.json()).then(data=>{
       if (data.status === 200){
@@ -11,8 +17,14 @@ function App() {
       console.log(data)
     })
   },[])
-  function click(path){//下载
-    fetch(`http://${apiUrl}:4567/file/${path}`).then(res=>res.blob()).then(blob=>{
+
+  function closeHandler(){
+    setModal(false)
+  }
+
+  async function click(path){//下载
+    setModal(true)
+    await fetch(`http://${apiUrl}:4567/file/${path}`).then(res=>res.blob()).then(blob=>{
       let paths = path.split('/')
       var filename =  paths[paths.length-1]
       var a = document.createElement('a');//control+C+V大法好🐮🍺
@@ -21,10 +33,16 @@ function App() {
       a.href = url;
       a.download = filename;
       a.target='_blank'  // a标签增加target属性
+      setProgress(100)
+      setModal(false)
       a.click();
       a.remove()  //移除a标签
       window.URL.revokeObjectURL(url);
     })
+    setTimeout(() => {
+      setProgress(0)
+    }, 1000);
+    
   }
  return (<>
       <Divider align="center">壹米滴答网点日常资源</Divider>
@@ -32,6 +50,11 @@ function App() {
       <Text style={{'color': 'red'}} h6>点击+号展开文件夹，点击文件直接下载， 技术支持：企业微信-川渝省区-IT支持组-林帅</Text>
       <Tree onClick={click} value={files}/>
       <Divider />
+      <Modal visible={modal} onClose={closeHandler}>
+      <Modal.Title>加载中，请稍等</Modal.Title>
+        <Progress value={progress} />
+        <Loading type="secondary" />
+      </Modal>
   </>
  );
 }
