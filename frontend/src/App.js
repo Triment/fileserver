@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Tree, Text, Divider, Modal, Loading, Progress, useToasts } from '@geist-ui/core'
+import { Tree, Text, Divider, Modal, Loading, Progress } from '@geist-ui/core'
 function App() {
 
   const apiUrl = process.env.REACT_APP_HOST
   const [files, setFiles] = useState([])
   const [modal, setModal] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [, setToast] = useToasts()
 
 
   useEffect(()=>{
