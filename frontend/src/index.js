@@ -2,13 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import MainPage from './Main';
+import Blog from './Blog'
 import reportWebVitals from './reportWebVitals';
 import { GeistProvider, CssBaseline } from '@geist-ui/core'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 ReactDOM.render(
   <React.StrictMode>
     <GeistProvider>
       <CssBaseline />
-      <App/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="files" element={<App />} />
+          <Route path="blog" element={<Blog />} />
+        </Routes>
+      </BrowserRouter>
     </GeistProvider>
   </React.StrictMode>,
   document.getElementById('root')
