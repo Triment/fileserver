@@ -1,4 +1,4 @@
-import { Fieldset, Button } from '@geist-ui/core'
+import { Fieldset } from '@geist-ui/core'
 export default function (props) {
     return (
         <>

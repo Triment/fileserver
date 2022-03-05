@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json" -X POST -d '{ "title": "hello", "body": "content" }' http://localhost:4567/blog/create

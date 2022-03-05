@@ -2,106 +2,21 @@ package main
 
 import (
 	"fmt"
-	"io/fs"
-	"io/ioutil"
-	"os"
-	"path"
-	"strings"
+	"ymdd/controll"
 
 	"github.com/Triment/eject"
 )
 
-//define file or folder struct
-
-type File struct {
-	Type     string `json:"type"`
-	PathName string `json:"name"`
-	Children []File `json:"files"`
-}
-
-type ResMessage struct {
-	Status int         `json:"status"`
-	Body   interface{} `json:"body"`
-}
-
-//跨域中间件
-var cors = func(c *eject.Context) {
-	c.Res.Header().Set("Access-Control-Allow-Origin", "*")
-}
-
-func recurse(path string) ([]File, error) { //递归文件夹
-	fmt.Println(path)
-	var arr []File
-	stat, err := os.Stat(path)
-	if err != nil {
-		return arr, err
-	}
-	if stat.IsDir() {
-		files, err := ioutil.ReadDir(path)
-		if err != nil {
-			return arr, err
-		}
-		for _, f := range files {
-			if f.IsDir() {
-				var file File = File{Type: "directory", PathName: f.Name()}
-				children, err := recurse(path + "/" + f.Name())
-				if err != nil {
-					return arr, err
-				}
-				file.Children = children
-				arr = append(arr, file)
-			} else {
-				arr = append(arr, File{Type: "file", PathName: f.Name()})
-			}
-		}
-	}
-	return arr, nil
-}
-
 func main() {
-	root := "/web/public"
-	fileSystem := os.DirFS(root)
 	router := eject.CreateRouter()
-	router.GET("/file", func(context *eject.Context) {
-		files, err := recurse(root)
-		if err != nil {
-			context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"})
-		}
-		context.JSON(&ResMessage{Status: 200, Body: files}) //根文件夹，返回文件夹列表
-	})
-	router.GET("/file/*path", func(context *eject.Context) {
-		if len(context.Params["path"]) > 0 && fs.ValidPath(path.Join(path.Base(root), context.Params["path"])) {
-			reqPath := path.Join(root, context.Params["path"])
-			stat, err := os.Stat(reqPath)
-			fmt.Println(reqPath)
-			if err != nil {
-				context.JSON(&ResMessage{Status: 404, Body: "文件信息读取失败"}) //文件读取信息失败
-				return
-			}
-			if stat.IsDir() {
-				files, err := recurse(reqPath)
-				if err != nil {
-					context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"}) //文件夹打开失败
-					return
-				}
-				context.JSON(&ResMessage{Status: 200, Body: files}) //打开文件夹，返回文件夹列表
-			} else {
-				file, err := fs.ReadFile(fileSystem, context.Params["path"])
-				paths := strings.Split(context.Params["path"], "/")
-				fileName := paths[len(paths)-1]
-				fmt.Println(fileName)
-				if err == nil {
-					context.Res.Header().Set("Content-Type", "application/octet-stream")
-					context.Res.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))
-					context.Res.Write(file) //下载文件
-				} else {
-					context.JSON(&ResMessage{Status: 500, Body: "文件加载失败"}) //文件加载失败
-				}
-			}
-		}
-	})
+	router.GET("/file", controll.GetDir)
+	router.GET("/file/*path", controll.GetFile)
+	router.POST("/blog/create", controll.PostBlog)
+	for k, _ := range router.Handler {
+		fmt.Println(k)
+	}
 	app := eject.CreateApp()
-	app.Inject(cors)
+	app.Inject(controll.CrosMiddle)
 	app.Inject(router.Accept())
 	app.Listen(":4567")
 }

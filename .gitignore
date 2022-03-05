@@ -7,7 +7,7 @@ frontend.pnp.js
 
 # testing
 frontend/coverage
-
+backend/blog.db
 # production
 frontend/build
 
