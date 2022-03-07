@@ -56,7 +56,11 @@ func recurse(path string) ([]File, error) { //递归文件夹
 }
 
 func GetDir(context *eject.Context) {
-	root := "/web/public"
+	currentPath, err := os.Getwd()
+	if err != nil {
+		panic("文件夹不存在")
+	}
+	root := currentPath + "/public"
 	files, err := recurse(root)
 	if err != nil {
 		context.JSON(&ResMessage{Status: 500, Body: "文件夹打开失败"})

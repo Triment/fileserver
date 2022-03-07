@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/BurntSushi/toml v0.4.1 // indirect
-	github.com/Triment/eject v0.0.0-20220120091850-2e3c8901dfeb // indirect
+	github.com/Triment/eject v0.0.0-20220307033415-30b4bdfa6970 // indirect
 	github.com/cilium/ebpf v0.7.0 // indirect
 	github.com/cosiner/argv v0.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
