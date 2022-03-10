@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import MainPage from './Main';
-import Blog from './Blog'
+import Blogs from './Blogs'
 import reportWebVitals from './reportWebVitals';
 import { GeistProvider, CssBaseline } from '@geist-ui/core'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CreateBlog from './CreateBlog';
+import BlogById from './BlogById';
 ReactDOM.render(
   <React.StrictMode>
     <GeistProvider>
@@ -16,8 +17,9 @@ ReactDOM.render(
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="files" element={<App />} />
-          <Route path="blog" element={<Blog />} />
-          <Route path="blog/new" element={ <CreateBlog/> }/>
+          <Route path="blog" element={<Blogs />} />
+          <Route path="blog/:id" element={<BlogById />} />
+          <Route path="blog/new" element={<CreateBlog />} />
         </Routes>
       </BrowserRouter>
     </GeistProvider>

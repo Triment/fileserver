@@ -1,5 +1,5 @@
 //https://codepen.io/netsi1964/pen/QbLLGW
-import {Button} from '@geist-ui/core'
+import {Button, useMediaQuery} from '@geist-ui/core'
 var commandsMap = [
   {
       "cmd": "backColor",
@@ -266,6 +266,11 @@ function supported(cmd) {
 }
 
 function Tabs() {
+  const isXS = useMediaQuery('xs')
+  const isSM = useMediaQuery('sm')
+  const isMD = useMediaQuery('md')
+  const isLG = useMediaQuery('lg')
+  const isXL = useMediaQuery('xl')
   commandsMap.map((v,i)=>{
     commandRelation[v.cmd] = commandsMap[i]
   })
@@ -286,7 +291,16 @@ function Tabs() {
   return (
     <div style={{ display: 'flex', flex: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
       {commandsMap.map((command, i) => {
-        return <Button  ghost scale={0.5} key={i}  style={{ margin: '.1rem'}} title={command.desc} onMouseDown={e => e.preventDefault()} onClick={e => doCommand(command.cmd)}>{command.short}</Button>
+        return <Button 
+                scale={(isXS && 0.1)||(isSM && 0.2)||(isMD && 0.3)||(isLG && 0.4)||(isXL && .5)} 
+                disabled={!document.queryCommandSupported(command.cmd)} 
+                type={document.queryCommandSupported(command.cmd)?"success-light":"error-light"}  
+                ghost  
+                key={i}  
+                style={{ margin: '.1rem',opacity: document.queryCommandSupported(command.cmd)? 1: 0.3}} 
+                title={command.desc} 
+                onMouseDown={e => e.preventDefault()} 
+                onClick={e => doCommand(command.cmd)}>{command.short}</Button>
       })}
     </div>
   )
