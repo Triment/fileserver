@@ -162,7 +162,7 @@ func GetBlogById(c *eject.Context) {
 	defer row.Close()
 	row.Next()
 	var blog Blog
-	row.Scan(&blog.Id, &blog.Title, &blog.Body, &blog.Star, &blog.CreateTime, &blog.UpdateTime)
+	row.Scan(&blog.Id, &blog.Title, &blog.Body, &blog.CreateTime, &blog.UpdateTime, &blog.Star)
 	c.JSON(&blog)
 }
 
@@ -190,23 +190,26 @@ func StarBlogById(c *eject.Context) {
 		c.JSON(&ResMessage{Status: 403, Body: "参数错误"})
 		return
 	}
-	row, err := db.Query("select star from blog where id=?", id)
+	row, err := db.Query("select * from blog where id=?", id)
+	if err != nil {
+		fmt.Println(err)
+	}
 	if err != nil {
 		panic("row nil")
 	}
-	defer row.Close()
 	row.Next()
-	var star int
-	row.Scan(&star)
-	fmt.Println(id)
-	res, err := db.Exec("update blog set star=? where id=?", star+1, id)
-	if err != nil {
-		panic("row nil")
-	}
-	res.RowsAffected()
 	var blog Blog
-	row, err = db.Query("select * from blog where id=?", id)
-	row.Next()
-	row.Scan(&blog.Id, &blog.Title, &blog.Body, &blog.Star, &blog.CreateTime, &blog.UpdateTime)
+	row.Scan(&blog.Id, &blog.Title, &blog.Body, &blog.CreateTime, &blog.UpdateTime, &blog.Star)
+	row.Close()
+	sql := fmt.Sprintf("update blog set star= %d where id= %d", blog.Star+1, id)
+	res, err := db.Exec(sql)
+	if err != nil {
+		panic(err)
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Print(count)
 	c.JSON(&blog)
 }
