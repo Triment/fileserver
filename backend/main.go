@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"ymdd/controll"
 
 	"github.com/Triment/eject"
@@ -14,9 +13,12 @@ func main() {
 	router.POST("/file/delete", controll.DeleteFile)
 	router.GET("/file/*path", controll.GetFile)
 	router.POST("/blog/create", controll.PostBlog)
-	for k, _ := range router.Handler {
-		fmt.Println(k)
-	}
+	router.POST("/blog/all", controll.GetAll)
+	router.GET("/blog/:id", controll.GetBlogById)
+	router.POST("/blog/:id/star", controll.StarBlogById)
+	// for k, _ := range router.Handler {
+	// 	fmt.Println(k)
+	// }
 	app := eject.CreateApp()
 	app.Inject(controll.CrosMiddle)
 	app.Inject(router.Accept())
