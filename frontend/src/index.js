@@ -1,28 +1,34 @@
-import React from 'react';
+import React,{useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import MainPage from './Main';
 import Blogs from './Blogs'
 import reportWebVitals from './reportWebVitals';
-import { GeistProvider, CssBaseline } from '@geist-ui/core'
+import { GeistProvider, CssBaseline, Text, Divider } from '@geist-ui/core'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CreateBlog from './CreateBlog';
 import BlogById from './BlogById';
+
+const Arap = ()=>{
+  const [themeType, setThemeType] = useState('dark')
+  return <GeistProvider themeType={themeType}>
+          <CssBaseline />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="files" element={<App />} />
+              <Route path="blog" element={<Blogs />} />
+              <Route path="blog/:id" element={<BlogById />} />
+              <Route path="blog/new" element={<CreateBlog />} />
+            </Routes>
+          </BrowserRouter>
+        </GeistProvider>
+}
+
 ReactDOM.render(
   <React.StrictMode>
-    <GeistProvider>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="files" element={<App />} />
-          <Route path="blog" element={<Blogs />} />
-          <Route path="blog/:id" element={<BlogById />} />
-          <Route path="blog/new" element={<CreateBlog />} />
-        </Routes>
-      </BrowserRouter>
-    </GeistProvider>
+    <Arap/>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -3,6 +3,7 @@ services:
   frontend:
     image: nginx
     volumes:
+    #前端
       - ./templates:/etc/nginx/templates
       - ./frontend/build:/www/app/build
     ports:
@@ -12,6 +13,7 @@ services:
   backend:
     build: ./backend
     volumes:
-      - ./public:/web/public
+      #文件夹路径参考dockefile
+      - ./public:/go/bin/public
     ports: 
       - "4567:4567"

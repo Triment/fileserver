@@ -34,6 +34,6 @@ export default () => {
         <Text h1>{title}</Text>
         <p dangerouslySetInnerHTML={{ __html: content }} />
         {/* <Editor/> */}
-        <Button icon={<p>👍</p>} scale={1/3} type="success-light" onClick={increaseStar} auto>{star} 赞</Button>
+        <Button icon={<p>👍</p>} scale={1/3} type="secondary" onClick={increaseStar} auto>{star} 赞</Button>
     </Page>
 }

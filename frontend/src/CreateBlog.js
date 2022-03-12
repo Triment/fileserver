@@ -1,36 +1,38 @@
-import { Badge, Button, ButtonDropdown, Input, useToasts } from "@geist-ui/core";
-import { createRef, useState } from "react";
+import { Badge, Tree, Button, ButtonDropdown, Input, useToasts } from "@geist-ui/core";
+import { createRef, useState, useEffect, useRef } from "react";
 import Editor from "./components/Editor/Editor";
 
 export default function () {
     const apiUrl = process.env.REACT_APP_HOST
     const fileRef = createRef()//输入框ref
     const [file, setFile] = useState('')
+    const [files, setFiles] = useState('')
+    const filePathRef = useRef()
     const bodyRef = createRef()//文章ref
     const [fileList, setFileList] = useState([])
     const [title, setTitle] = useState('')
-    const [contentHtml, setContent] = useState('')
-    const buttonClick = e => {
-        // const event = new InputEvent('input', {
-        //     view: window,
-        //     bubbles: true,
-        //     cancelable: true
-        // })
-        // console.log(bodyRef.current.dispatchEvent(event))
-        (title.length!=0 && bodyRef.current.innerHTML.length!=0)&&
-        fetch(`http://${apiUrl}:4567/blog/create`, {
-            method: 'POST',
-            body: JSON.stringify({
-                title: title,
-                body: bodyRef.current.innerHTML
-            })
-        }).then(res=>res.json()).then(data=>{
-            console.log(data)
+
+    useEffect(()=>{
+        fetch(`http://${apiUrl}:4567/file`).then(res=>res.json()).then(data=>{
+          if (data.status === 200){
+            setFiles(data.body)
+          }
+          console.log(data)
         })
+      },[])
+
+    const treeClick = path => {
+        console.log(filePathRef.current)
+        filePathRef.current.value = path+'/'
+        filePathRef.current.focus()
     }
+
     const upload = e => {
         const formData = new FormData()
+        console.log(fileRef.current.files[0])
+        filePathRef.current.value+=fileRef.current.files[0].name
         formData.append('uploadFile', fileRef.current.files[0])
+        formData.append('uploadPath', filePathRef.current.value)
         fetch(`http://${apiUrl}:4567/file`, {
             method: 'POST',
             body: formData
@@ -51,6 +53,20 @@ export default function () {
             alert(`${data.body}已删除`)
         })
     }
+
+    const buttonClick = e => {
+        (title.length!=0 && bodyRef.current.innerHTML.length!=0)&&
+        fetch(`http://${apiUrl}:4567/blog/create`, {
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                title: title,
+                body: bodyRef.current.innerHTML
+            })
+        }).then(res=>res.json()).then(data=>{
+            console.log(data)
+        })
+    }
     return (
         <div style={{ display: 'flex',position: 'absolute', top:0,right:0, bottom:0, left:0,lineHeight: 1.5,justifyContent: 'space-between',flexDirection: 'column', margin: '2em 5rem' }}>
             <Input onInput={e=>setTitle(e.currentTarget.value)} />
@@ -60,7 +76,9 @@ export default function () {
                 <ButtonDropdown.Item>视频插入</ButtonDropdown.Item>
                 <ButtonDropdown.Item>文件插入</ButtonDropdown.Item>
                 <ButtonDropdown.Item onClick={e=>deleteFile(i)} main>删除{i}</ButtonDropdown.Item>
-                </ButtonDropdown>))}   
+                </ButtonDropdown>))}
+            <Tree onClick={treeClick} value={files}/>
+            <Input ref={filePathRef} />
             <Input htmlType="file" onChange={upload} ref={fileRef} />     
             <Button type="success" onClick={buttonClick} style={{ maxWidth: '2rem'}}  ghost> 提交</Button>
         </div>

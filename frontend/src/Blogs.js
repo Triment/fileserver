@@ -1,8 +1,54 @@
-import { Card, Link, Text } from '@geist-ui/core'
+import { Card, Link, Text, Rating } from '@geist-ui/core'
 import { Search } from '@geist-ui/icons'
 import { useEffect, useState } from 'react'
 import { Pagination } from '@geist-ui/core'
+import styled from 'styled-components'
 import { ChevronRightCircleFill, ChevronLeftCircleFill, ChevronLeftCircle } from '@geist-ui/icons'
+
+//搜索框容器
+const SearchWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 320px;
+    overflow: hidden;
+    background-color: #FFFFFF;
+    border-radius: 100px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    :hover {
+        width: 360px;
+    }
+    transition: all cubic-bezier(0.165, 0.84, 0.44, 1) .5s;
+`
+//input
+const SearchInput = styled.input`
+    background-color: transparent;
+    outline: none;
+    font-family: Product Sans;
+    font-size: 16px;
+    padding: 4px 0px 4px 14px;
+    border: none;
+    z-index: 8;
+    width: 90%;
+    ::placeholder {
+        color: #a5a5a5;
+    }
+`
+const SearchButton = styled.button`
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    width: 20%;
+    font-size: 16px;
+    color: #000;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 0px;
+    transition: background-color 0.2s;
+    :hover {
+        background-color: #fbc2eb;
+    }
+`
 export default function () {
     const [blogs, setBlogs] = useState([])//列表数据
     const [total, setTotal] = useState(0)//设置总数
@@ -30,72 +76,45 @@ export default function () {
         document.title = "自助搜索"
         query({ offset: 0 })
     }, [])
+
+
     return (
         <div
-            style={{ margin: "1rem", display: "flex", flexDirection: "column", padding: '2em' }}>
-                <Link href="/"><ChevronLeftCircle /></Link>
+            style={{ margin: "3rem 3rem 0 3rem", display: "flex", flexDirection: "column" }}>
+            {/* 返回上一级 */}
+            <Link href="/"><ChevronLeftCircle /></Link>
             {/* 搜索框 */}
             <div
-                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-                <div 
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    minWidth: '320px',
-                    overflow: 'hidden',
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: '100px',
-                    boxShadow: '2px 2px 5px rgba(0, 0, 0, 0.2)'
-                    }}>
-                    <input
-                        style={{
-                            backgroundColor:'transparent',
-                            outline: 'none',
-                            fontFamily: 'Product Sans',
-                            fontSize: '16px',
-                            padding: '4px 0px 4px 14px',
-                            border: 'none',
-                            zIndex: 8,
-                            width: '80%',
-                            '::placeholder' : {
-                                color: '#a5a5a5'
-                            }
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '2rem' }}>
+                <SearchWrap>
+                    <SearchInput
+                        onInput={({ currentTarget }) => {
+                            setSearch(currentTarget.value)
+                            query({ offset: 0 })
                         }}
-                        onInput={({ currentTarget }) => { setSearch(currentTarget.value) }}
                         placeholder="输入关键字进行搜索，如：缓存 " />
-                    <button
+                    <SearchButton
                         onClick={e => { query({ offset: 0 }) }}
-                        style={{
-                            backgroundColor: 'transparent',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            width: '20%',
-                            fontSize: '16px',
-                            color: '#000',
-                            padding: '8px 10px',
-                            border: 'none',
-                            borderRadius: '0px',
-                            transition: 'background-color 0.2s',
-                            ':hover' : {
-                            backgroundColor: '#dfdfdf'
-                            }
-                        }}
-                    ><Search/></button>
-                </div>
+                    ><Search /></SearchButton>
+                </SearchWrap>
             </div>
             {/* 渲染列表 */}
             {blogs.map((v, i) => {
                 return (
-                    <Card style={{ margin: '.3em 0' }} key={i} >
+                    <Card hoverable style={{ margin: '.3em 0' }} key={i} >
                         <Link href={`/blog/${v.id}`}><Text h5>{v.title}</Text></Link>
-                        <p style={{ height: '2em', overflow: 'hidden' }} dangerouslySetInnerHTML={{ __html: v.body }} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <p style={{ height: '2em', overflow: 'hidden', flex: 8 }} dangerouslySetInnerHTML={{ __html: v.body }} />
+                            <div style={{ flex: 2, marginLeft: '.8em' }}>
+                                <Rating count={5} value={v.star} type="warning" style={{ pointerEvents: 'none', opacity: v.star == 0 && 0 }} />
+                            </div>
+                        </div>
                     </Card>
                 )
             })}
             {/* 分页 */}
             <div
-                style={{ display: pages > 1 ? 'flex' : 'none', position: 'absolute', bottom: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                style={{ display: pages > 1 ? 'flex' : 'none', position: 'relative', bottom: 0, flexDirection: 'row', justifyContent: 'center' }}>
                 <Pagination
                     onChange={(i) => query({ limit: limit, offset: (i - 1) * limit })}
                     count={pages}>
