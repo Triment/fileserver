@@ -70,7 +70,11 @@ export default function () {
             .then(res => res.json())
         console.log(result.body.data)
         setTotal(result.body.total)
-        setPages(Math.floor(result.body.total / limit) + 1)
+        if (result.body.total%limit !=0){
+            setPages(Math.floor(result.body.total / limit) + 1)
+        } else {
+            setPages(result.body.total / limit)
+        }
         setBlogs(result.body.data)
     }
     useEffect(() => {
