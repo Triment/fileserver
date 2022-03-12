@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const H1 = styled.h2`
     display: inline;
     :hover {
-        color: white;
+        color: #44c2eb;
     }
     transition: all cubic-bezier(0.165, 0.84, 0.44, 1) .5s;
 `

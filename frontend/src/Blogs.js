@@ -109,7 +109,7 @@ export default function () {
                     <Card hoverable style={{ margin: '.3em 0' }} key={i} >
                         <Link href={`/blog/${v.id}`}><Text h5>{v.title}</Text></Link>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <p style={{ height: '2em', overflow: 'hidden', flex: 8 }} dangerouslySetInnerHTML={{ __html: v.body }} />
+                            <p style={{ maxHeight: '2em', overflow: 'hidden', flex: 8 }} dangerouslySetInnerHTML={{ __html: v.body }} />
                             <div style={{ flex: 2, marginLeft: '.8em' }}>
                                 <Rating count={5} value={v.star} type="warning" style={{ pointerEvents: 'none', opacity: v.star === 0 && 0 }} />
                             </div>
