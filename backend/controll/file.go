@@ -22,10 +22,6 @@ type ResMessage struct {
 	Body   interface{} `json:"body"`
 }
 
-const (
-	root = "/web/public"
-)
-
 func recurse(path string) ([]File, error) { //递归文件夹
 	fmt.Println(path)
 	var arr []File
@@ -70,11 +66,15 @@ func GetDir(context *eject.Context) {
 }
 
 func GetFile(context *eject.Context) {
+	currentPath, err := os.Getwd()
+	if err != nil {
+		panic("文件夹不存在")
+	}
+	root := currentPath + "/public"
 	fileSystem := os.DirFS(root)
 	if len(context.Params["path"]) > 0 && fs.ValidPath(path.Join(path.Base(root), context.Params["path"])) {
 		reqPath := path.Join(root, context.Params["path"])
 		stat, err := os.Stat(reqPath)
-		fmt.Println(reqPath)
 		if err != nil {
 			context.JSON(&ResMessage{Status: 404, Body: "文件信息读取失败"}) //文件读取信息失败
 			return
@@ -87,10 +87,11 @@ func GetFile(context *eject.Context) {
 			}
 			context.JSON(&ResMessage{Status: 200, Body: files}) //打开文件夹，返回文件夹列表
 		} else {
+			fmt.Println(fileSystem)
 			file, err := fs.ReadFile(fileSystem, context.Params["path"])
 			paths := strings.Split(context.Params["path"], "/")
 			fileName := paths[len(paths)-1]
-			fmt.Println(fileName)
+
 			if err == nil {
 				context.Res.Header().Set("Content-Type", "application/octet-stream")
 				context.Res.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fileName))

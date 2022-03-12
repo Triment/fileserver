@@ -50,7 +50,7 @@ func PostBlog(c *eject.Context) {
 	fmt.Println(blog)
 	stmt, err := db.Prepare("INSERT INTO blog(title, content) values(?,?)")
 	if err != nil {
-		panic("stmt nil")
+		panic(err)
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(blog.Title, blog.Body)
@@ -102,7 +102,11 @@ func GetAll(c *eject.Context) {
 	}
 	defer rows.Close()
 	var sum int
-	res, err := db.Query("select count(*) from blog")
+	res, err := db.Query("select count(*) from blog where (content like ? or title like ?)", query.Condition, query.Condition)
+	if err != nil {
+		panic("query nil")
+	}
+	defer res.Close()
 	res.Next()
 	res.Scan(&sum)
 	queryData := make([]*Blog, 0)

@@ -5,13 +5,27 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/Triment/eject"
 )
 
+//创建文件夹，如果不存在
+func recursionCreateDir(p string) {
+	paths := strings.Split(p, "/")
+	p = "/"
+	for _, v := range paths {
+		p = path.Join(p, v)
+		_, err := os.Stat(p)
+		if err != nil {
+			os.MkdirAll(p, os.ModePerm)
+		}
+	}
+}
+
 func UploadFile(c *eject.Context) {
 	c.Req.ParseMultipartForm(32 << 20)
-	file, handler, err := c.Req.FormFile("uploadFile")
+	file, _, err := c.Req.FormFile("uploadFile")
 	if err != nil {
 		c.JSON(&ResMessage{Status: 500, Body: "上传错误"})
 		return
@@ -23,11 +37,14 @@ func UploadFile(c *eject.Context) {
 		return
 	}
 	currentPath, err := os.Getwd()
+
+	recursionCreateDir(path.Join(currentPath, "public", strings.Join(strings.Split(c.Req.FormValue("uploadPath"), "/")[:1], "/")))
 	if err != nil {
 		panic(err)
 	}
-	ioutil.WriteFile(path.Join(currentPath, "./public/", handler.Filename), b, 0777)
-	c.JSON(&ResMessage{Status: 200, Body: handler.Filename})
+	p := path.Join(currentPath, "./public/", c.Req.FormValue("uploadPath"))
+	ioutil.WriteFile(p, b, 0777)
+	c.JSON(&ResMessage{Status: 200, Body: c.Req.FormValue("uploadPath")})
 }
 
 type DeleteDst struct {
