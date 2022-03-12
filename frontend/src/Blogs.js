@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { Pagination } from '@geist-ui/core'
 import styled from 'styled-components'
 import { ChevronRightCircleFill, ChevronLeftCircleFill, ChevronLeftCircle } from '@geist-ui/icons'
-
+import { useNavigate } from 'react-router-dom'
 //搜索框容器
 const SearchWrap = styled.div`
     display: flex;
@@ -56,6 +56,7 @@ export default function () {
     const [pages, setPages] = useState(0)//设置分页数
     const [searchDesc, setSearch] = useState('')//设置搜索内容
     const apiUrl = process.env.REACT_APP_HOST
+    const navigate = useNavigate()
 
     async function query(grasp) {//获取数据
         const result = await fetch(`http://${apiUrl}:4567/blog/all`, {
@@ -82,7 +83,7 @@ export default function () {
         <div
             style={{ margin: "3rem 3rem 0 3rem", display: "flex", flexDirection: "column" }}>
             {/* 返回上一级 */}
-            <Link href="/"><ChevronLeftCircle /></Link>
+            <ChevronLeftCircle onClick={e=>navigate(-1)} />
             {/* 搜索框 */}
             <div
                 style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: '2rem' }}>
@@ -106,7 +107,7 @@ export default function () {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <p style={{ height: '2em', overflow: 'hidden', flex: 8 }} dangerouslySetInnerHTML={{ __html: v.body }} />
                             <div style={{ flex: 2, marginLeft: '.8em' }}>
-                                <Rating count={5} value={v.star} type="warning" style={{ pointerEvents: 'none', opacity: v.star == 0 && 0 }} />
+                                <Rating count={5} value={v.star} type="warning" style={{ pointerEvents: 'none', opacity: v.star === 0 && 0 }} />
                             </div>
                         </div>
                     </Card>

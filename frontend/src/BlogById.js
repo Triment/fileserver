@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Link, Page, Text, Button } from '@geist-ui/core'
 import { ChevronLeftCircle  } from '@geist-ui/icons'
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import Editor from "./components/Editor/Editor"
 export default () => {
     let params = useParams();
+    const navigate = useNavigate()
     const [[title, setTitle], [content, setContent], [star, setStar]] = [useState(''), useState(''), useState(0)]
     const apiUrl = process.env.REACT_APP_HOST
     const getData = async () => {
@@ -30,7 +31,7 @@ export default () => {
         })
     }
     return <Page>
-        <Link href="/blog"><ChevronLeftCircle /></Link>
+        <ChevronLeftCircle onClick={e=>navigate(-1)} />
         <Text h1>{title}</Text>
         <p dangerouslySetInnerHTML={{ __html: content }} />
         {/* <Editor/> */}
