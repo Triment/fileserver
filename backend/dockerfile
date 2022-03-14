@@ -1,9 +1,7 @@
 FROM golang:1.18rc1-stretch AS builder
 COPY . /src
 WORKDIR /src
-RUN go env -w GO111MODULE=on
-RUN go env -w GOPROXY=https://goproxy.io,direct
-RUN go build main.go
+RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.io,direct && go build main.go
 FROM nouchka/sqlite3
 
 COPY --from=builder /src/main /go/bin/main
