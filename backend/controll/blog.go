@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path"
 	"strconv"
@@ -20,6 +21,17 @@ type Blog struct {
 	CreateTime string `json:"create_time"`
 	UpdateTime string `json:"update_time"`
 	Star       int    `json:"star"`
+}
+
+func ReadUserIP(r *http.Request) string {
+	IPAddress := r.Header.Get("X-Real-Ip")
+	if IPAddress == "" {
+		IPAddress = r.Header.Get("X-Forwarded-For")
+	}
+	if IPAddress == "" {
+		IPAddress = r.RemoteAddr
+	}
+	return IPAddress
 }
 
 func PostBlog(c *eject.Context) {
@@ -172,6 +184,7 @@ func GetBlogById(c *eject.Context) {
 
 //点赞接口
 func StarBlogById(c *eject.Context) {
+	fmt.Println(ReadUserIP(c.Req))
 	currentPath, err := os.Getwd()
 	if err != nil {
 		panic("path err")
