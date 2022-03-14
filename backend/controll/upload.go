@@ -2,6 +2,7 @@ package controll
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -12,8 +13,13 @@ import (
 
 //创建文件夹，如果不存在
 func recursionCreateDir(p string) {
+	currentPath, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
 	paths := strings.Split(p, "/")
-	p = "/"
+	p = currentPath + "/" + "public"
+	paths = paths[:len(paths)-1]
 	for _, v := range paths {
 		p = path.Join(p, v)
 		_, err := os.Stat(p)
@@ -38,11 +44,12 @@ func UploadFile(c *eject.Context) {
 	}
 	currentPath, err := os.Getwd()
 
-	recursionCreateDir(path.Join(currentPath, "public", strings.Join(strings.Split(c.Req.FormValue("uploadPath"), "/")[:1], "/")))
+	recursionCreateDir(c.Req.FormValue("uploadPath"))
 	if err != nil {
 		panic(err)
 	}
 	p := path.Join(currentPath, "./public/", c.Req.FormValue("uploadPath"))
+	fmt.Println(p)
 	ioutil.WriteFile(p, b, 0777)
 	c.JSON(&ResMessage{Status: 200, Body: c.Req.FormValue("uploadPath")})
 }

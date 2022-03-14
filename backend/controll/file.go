@@ -23,7 +23,6 @@ type ResMessage struct {
 }
 
 func recurse(path string) ([]File, error) { //递归文件夹
-	fmt.Println(path)
 	var arr []File
 	stat, err := os.Stat(path)
 	if err != nil {
@@ -87,7 +86,6 @@ func GetFile(context *eject.Context) {
 			}
 			context.JSON(&ResMessage{Status: 200, Body: files}) //打开文件夹，返回文件夹列表
 		} else {
-			fmt.Println(fileSystem)
 			file, err := fs.ReadFile(fileSystem, context.Params["path"])
 			paths := strings.Split(context.Params["path"], "/")
 			fileName := paths[len(paths)-1]
