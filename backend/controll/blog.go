@@ -34,6 +34,16 @@ func ReadUserIP(r *http.Request) string {
 	return IPAddress
 }
 
+type Query struct {
+	Limit     int    `json:"limit"`
+	Offset    int    `json:"offset"`
+	Condition string `json:"condition"`
+}
+type Blogs struct {
+	Total int         `json:"total"`
+	Data  interface{} `json:"data"`
+}
+
 func PostBlog(c *eject.Context) {
 	currentPath := os.Getenv("DATABASE")
 	fmt.Println(path.Join(currentPath, "./blog.db"))
@@ -67,16 +77,6 @@ func PostBlog(c *eject.Context) {
 		panic(err)
 	}
 	c.JSON(&blog)
-}
-
-type Query struct {
-	Limit     int    `json:"limit"`
-	Offset    int    `json:"offset"`
-	Condition string `json:"condition"`
-}
-type Blogs struct {
-	Total int         `json:"total"`
-	Data  interface{} `json:"data"`
 }
 
 //查询与搜索
@@ -216,4 +216,43 @@ func StarBlogById(c *eject.Context) {
 	}
 	fmt.Print(count)
 	c.JSON(&blog)
+}
+
+//修改
+func ModifyBlog(c *eject.Context) {
+	currentPath := os.Getenv("DATABASE")
+	fmt.Println(path.Join(currentPath, "./blog.db"))
+	db, err := sql.Open("sqlite3", path.Join(currentPath, "./blog.db"))
+	if err != nil {
+		panic(err)
+	}
+	if db == nil {
+		panic("db nil")
+	}
+	defer db.Close()
+	err = db.Ping()
+	if err != nil {
+		fmt.Println(err)
+	}
+	id, err := strconv.Atoi(c.Params["id"])
+	if err != nil {
+		c.JSON(&ResMessage{Status: 403, Body: "参数错误"})
+		return
+	}
+	var blog Blog
+	err = json.NewDecoder(c.Req.Body).Decode(&blog)
+	if err != nil {
+		c.JSON(&ResMessage{Status: 500, Body: "解析异常"})
+		return
+	}
+	stmt, err := db.Prepare("update blog set content= ?, title= ? where id= ?")
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(blog.Body, blog.Title, id)
+	if err != nil {
+		panic(err)
+	}
+	c.JSON(&ResMessage{Status: 200, Body: "更新成功"})
 }

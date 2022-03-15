@@ -9,6 +9,7 @@ import { GeistProvider, CssBaseline, Text, Divider } from '@geist-ui/core'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import CreateBlog from './CreateBlog';
 import BlogById from './BlogById';
+import UpdateBlog from './UpdateBlog';
 
 const Arap = ()=>{
   const [themeType, setThemeType] = useState('dark')
@@ -20,6 +21,7 @@ const Arap = ()=>{
               <Route path="files" element={<App />} />
               <Route path="blog" element={<Blogs />} />
               <Route path="blog/:id" element={<BlogById />} />
+              <Route path="blog/:id/update" element={<UpdateBlog />} />
               <Route path="blog/new" element={<CreateBlog />} />
             </Routes>
           </BrowserRouter>

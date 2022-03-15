@@ -13,6 +13,7 @@ func main() {
 	router.POST("/file/delete", controll.DeleteFile)
 	router.GET("/file/*path", controll.GetFile)
 	router.POST("/blog/create", controll.PostBlog)
+	router.POST("/blog/:id/update", controll.ModifyBlog)
 	router.POST("/blog/all", controll.GetAll)
 	router.GET("/blog/:id", controll.GetBlogById)
 	router.POST("/blog/:id/star", controll.StarBlogById)
