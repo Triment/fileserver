@@ -15,6 +15,7 @@ services:
     volumes:
       #文件夹路径参考dockefile
       - ./public:/go/bin/public
-      - /go/bin/:backend/container/bin/
+    env_file:
+      - ./backend/.env
     ports: 
       - "4567:4567"

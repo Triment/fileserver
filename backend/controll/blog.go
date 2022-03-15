@@ -35,10 +35,7 @@ func ReadUserIP(r *http.Request) string {
 }
 
 func PostBlog(c *eject.Context) {
-	currentPath, err := os.Getwd()
-	if err != nil {
-		panic("path err")
-	}
+	currentPath := os.Getenv("DATABASE")
 	fmt.Println(path.Join(currentPath, "./blog.db"))
 	db, err := sql.Open("sqlite3", path.Join(currentPath, "./blog.db"))
 	if err != nil {
@@ -84,10 +81,8 @@ type Blogs struct {
 
 //查询与搜索
 func GetAll(c *eject.Context) {
-	currentPath, err := os.Getwd()
-	if err != nil {
-		panic("path err")
-	}
+	currentPath := os.Getenv("DATABASE")
+	fmt.Println(currentPath)
 	fmt.Println(path.Join(currentPath, "./blog.db"))
 	db, err := sql.Open("sqlite3", path.Join(currentPath, "./blog.db"))
 	if err != nil {
@@ -101,7 +96,6 @@ func GetAll(c *eject.Context) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(path.Dir("."))
 	var query Query
 	err = json.NewDecoder(c.Req.Body).Decode(&query)
 	if err != nil {
@@ -110,13 +104,13 @@ func GetAll(c *eject.Context) {
 	}
 	rows, err := db.Query("select * from blog where (content like ? or title like ?) order by star desc limit ? offset ?", query.Condition, query.Condition, query.Limit, query.Offset)
 	if err != nil {
-		panic("query nil")
+		panic(err)
 	}
 	defer rows.Close()
 	var sum int
 	res, err := db.Query("select count(*) from blog where (content like ? or title like ?)", query.Condition, query.Condition)
 	if err != nil {
-		panic("query nil")
+		panic(err)
 	}
 	defer res.Close()
 	res.Next()
@@ -149,10 +143,7 @@ func GetAll(c *eject.Context) {
 
 //查询详情
 func GetBlogById(c *eject.Context) {
-	currentPath, err := os.Getwd()
-	if err != nil {
-		panic("path err")
-	}
+	currentPath := os.Getenv("DATABASE")
 	fmt.Println(path.Join(currentPath, "./blog.db"))
 	db, err := sql.Open("sqlite3", path.Join(currentPath, "./blog.db"))
 	if err != nil {
@@ -184,11 +175,7 @@ func GetBlogById(c *eject.Context) {
 
 //点赞接口
 func StarBlogById(c *eject.Context) {
-	fmt.Println(ReadUserIP(c.Req))
-	currentPath, err := os.Getwd()
-	if err != nil {
-		panic("path err")
-	}
+	currentPath := os.Getenv("DATABASE")
 	fmt.Println(path.Join(currentPath, "./blog.db"))
 	db, err := sql.Open("sqlite3", path.Join(currentPath, "./blog.db"))
 	if err != nil {

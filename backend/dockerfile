@@ -5,8 +5,10 @@ RUN go env -w GO111MODULE=on && go env -w GOPROXY=https://goproxy.io,direct && g
 FROM nouchka/sqlite3
 
 COPY --from=builder /src/main /go/bin/main
-COPY ./db.sql /home
+COPY ./db.sql /sql/
 WORKDIR /go/bin/
-RUN mkdir public
-RUN cat /home/db.sql | sqlite3 blog.db
+RUN mkdir public && mkdir /database
+RUN cat /sql/db.sql | sqlite3 /sql/blog.db
+# CMD [ "sqlite3", "/home/blog.db" ]
+# ENTRYPOINT [ "/bin/bash", "cat", "/sql/db.sql", "|", "sqlite3", "/home/blog.db"]
 ENTRYPOINT [ "/go/bin/main" ]
