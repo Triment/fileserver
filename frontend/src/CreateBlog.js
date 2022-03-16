@@ -80,7 +80,7 @@ export default function () {
             <Tree onClick={treeClick} value={files}/>
             <Input ref={filePathRef} />
             <Input htmlType="file" onChange={upload} ref={fileRef} />     
-            <Button type="success" onClick={buttonClick} style={{ maxWidth: '2rem'}}  ghost> 提交</Button>
+            <Button type="success" onClick={buttonClick} style={{ maxWidth: '2rem', minHeight: '2rem' }}  ghost> 提交</Button>
         </div>
     )
 }
