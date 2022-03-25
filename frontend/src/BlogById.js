@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import Editor from "./components/Editor/Editor"
 import styled from "styled-components"
 const Content = styled.p`
-    > img {
+    img {
         display: block;
         clear: both;
         margin: auto;
