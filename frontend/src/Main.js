@@ -15,8 +15,8 @@ export default function() {
         <div style={{display:'flex', height:'100%', justifyContent: 'center', alignItems: 'center'}}>
             <div style={{ flexDirection: 'column', color: 'white', fontSize: 40 }}>
             <Tooltip text="软件、驱动资源下载"><Link to="files"><H1>文件下载</H1></Link></Tooltip>  &nbsp;|  &nbsp;
-                    <Tooltip text="系统异常，安装教程点我"><Link to="blog"><H1>自助问答</H1></Link></Tooltip>
-                    <Text h6>技术支持--川渝省区IT支持组</Text>
+                    <Tooltip text="系统异常，安装教程点我"><Link to="blog"><H1>自助问答</H1></Link></Tooltip> &nbsp;|  &nbsp;
+                    <Tooltip text="新开网点、更换手机号前请自查"><Link to="checkout"><H1>手机号查重</H1></Link></Tooltip>
             </div>
         
         </div>
