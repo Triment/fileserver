@@ -17,6 +17,7 @@ func main() {
 	router.POST("/blog/all", controll.GetAll)
 	router.GET("/blog/:id", controll.GetBlogById)
 	router.POST("/blog/:id/star", controll.StarBlogById)
+	router.GET("/checkout/:phone", controll.CheckoutPhone)
 	// for k, _ := range router.Handler {
 	// 	fmt.Println(k)
 	// }
